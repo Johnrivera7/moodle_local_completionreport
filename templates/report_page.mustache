@@ -1,0 +1,92 @@
+{{!
+    @template local_completionreport/report_page
+
+    Enhanced completion report layout.
+}}
+<div class="lcr-report {{#exportmode}}lcr-report--export{{/exportmode}}">
+    {{#exportmode}}
+    <header class="lcr-export-header">
+        <h1>{{strtitle}}</h1>
+        <h2>{{coursename}}</h2>
+        <p>{{exportdate}}</p>
+    </header>
+    {{/exportmode}}
+
+    {{^exportmode}}
+    <div class="lcr-toolbar">
+        <div class="lcr-toolbar__actions">
+            <a class="btn btn-primary" href="{{csvurl}}">{{strdownload}}</a>
+            <a class="btn btn-secondary" href="{{exporturl}}" target="_blank" rel="noopener">{{strexport}}</a>
+            <a class="btn btn-link" href="{{backurl}}">{{strback}}</a>
+        </div>
+        <div class="lcr-toolbar__filters">
+            <form method="get" action="{{baseurl}}" class="lcr-section-form">
+                <input type="hidden" name="id" value="{{courseid}}">
+                {{#groupid}}<input type="hidden" name="group" value="{{groupid}}">{{/groupid}}
+                <label for="lcr-section">{{sectionfilterlabel}}</label>
+                <select id="lcr-section" name="section" class="custom-select" onchange="this.form.submit()">
+                    {{#sectionoptions}}
+                    <option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>
+                    {{/sectionoptions}}
+                </select>
+            </form>
+            <label class="sr-only" for="lcr-search">{{strsearch}}</label>
+            <input type="search" id="lcr-search" class="form-control" placeholder="{{strsearch}}"
+                   data-lcr-search autocomplete="off">
+        </div>
+    </div>
+    <p class="lcr-orderhelp alert alert-info">{{orderhelp}}</p>
+    {{/exportmode}}
+
+    <section class="lcr-summary" aria-label="{{strsummary}}">
+        <h3 class="lcr-section-title">{{strsummary}}</h3>
+        <div class="lcr-cards">
+            {{#cards}}
+            <article class="lcr-card lcr-card--{{mod}}">
+                <p class="lcr-card__value">{{value}}</p>
+                <p class="lcr-card__title">{{title}}</p>
+            </article>
+            {{/cards}}
+        </div>
+    </section>
+
+    <section class="lcr-table-wrap" aria-label="{{strtable}}">
+        <h3 class="lcr-section-title">{{strtable}} <span class="lcr-count">({{rowcount}})</span></h3>
+        {{#rowcount}}
+        <div class="table-responsive lcr-table-scroll">
+            <table class="table table-striped table-hover generaltable lcr-table" id="lcr-table">
+                <thead>
+                    {{#hassectiongroups}}
+                    <tr class="lcr-section-row">
+                        <th colspan="{{stickyoffset}}"></th>
+                        {{#sectiongroups}}
+                        <th colspan="{{colspan}}" class="lcr-section-th" title="{{label}}">{{label}}</th>
+                        {{/sectiongroups}}
+                    </tr>
+                    {{/hassectiongroups}}
+                    <tr>
+                        {{#headers}}
+                        <th scope="col" class="{{#rotated}}lcr-th-rotated{{/rotated}}{{#sticky}} lcr-th-sticky{{/sticky}}"
+                            title="{{title}}">
+                            <span>{{label}}</span>
+                        </th>
+                        {{/headers}}
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#rows}}
+                    <tr data-search="{{searchtext}}">
+                        {{#cells}}
+                        <td class="{{class}}">{{#raw}}{{{text}}}{{/raw}}{{^raw}}{{text}}{{/raw}}</td>
+                        {{/cells}}
+                    </tr>
+                    {{/rows}}
+                </tbody>
+            </table>
+        </div>
+        {{/rowcount}}
+        {{^rowcount}}
+        <p class="alert alert-info">{{strempty}}</p>
+        {{/rowcount}}
+    </section>
+</div>
