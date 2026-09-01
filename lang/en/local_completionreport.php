@@ -16,9 +16,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Completion report+';
-$string['completionreport:view'] = 'View enhanced completion report';
-$string['privacy:metadata'] = 'The enhanced completion report only displays data stored elsewhere in Moodle.';
+$string['pluginname'] = 'Activity completion report ++';
+$string['completionreport:view'] = 'View activity completion report ++';
+$string['privacy:metadata'] = 'The activity completion report ++ only displays data stored elsewhere in Moodle.';
 
 $string['summaryheading'] = 'Summary';
 $string['tableheading'] = 'Participants';
@@ -30,7 +30,7 @@ $string['groupfilterhelp'] = 'Use the course group menu above to limit participa
 $string['downloadexcel'] = 'Download Excel (CSV)';
 $string['exportprint'] = 'Print / export view';
 $string['backtocourse'] = 'Back to course';
-$string['exporttitle'] = 'Enhanced activity completion report';
+$string['exporttitle'] = 'Activity completion report ++';
 $string['export_course'] = 'Course';
 $string['export_date'] = 'Generated';
 $string['norecords'] = 'No tracked participants found.';

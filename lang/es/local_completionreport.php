@@ -16,9 +16,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Informe de finalización+';
-$string['completionreport:view'] = 'Ver informe de finalización mejorado';
-$string['privacy:metadata'] = 'El informe de finalización mejorado solo muestra datos almacenados en otras partes de Moodle.';
+$string['pluginname'] = 'Informe de finalización de actividad ++';
+$string['completionreport:view'] = 'Ver informe de finalización de actividad ++';
+$string['privacy:metadata'] = 'El informe de finalización de actividad ++ solo muestra datos almacenados en otras partes de Moodle.';
 
 $string['summaryheading'] = 'Resumen';
 $string['tableheading'] = 'Participantes';
@@ -30,7 +30,7 @@ $string['groupfilterhelp'] = 'Use el menú de grupos del curso para limitar part
 $string['downloadexcel'] = 'Descargar Excel (CSV)';
 $string['exportprint'] = 'Imprimir / vista exportable';
 $string['backtocourse'] = 'Volver al curso';
-$string['exporttitle'] = 'Informe mejorado de finalización de actividades';
+$string['exporttitle'] = 'Informe de finalización de actividad ++';
 $string['export_course'] = 'Curso';
 $string['export_date'] = 'Generado';
 $string['norecords'] = 'No hay participantes con seguimiento.';
