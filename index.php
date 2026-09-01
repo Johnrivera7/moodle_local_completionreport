@@ -84,48 +84,50 @@ if (!$exportmode) {
 
     echo html_writer::start_div('lcr-charts-grid');
 
-    $serie = new core_chart_series(get_string('chart_progress', 'local_completionreport'), [
-        $s['notstarted'],
-        $s['inprogress'],
-        $s['completed'],
-    ]);
-    $chart = new core_chart_pie();
-    $chart->set_doughnut(true);
-    $chart->set_title(get_string('chart_progress', 'local_completionreport'));
-    $chart->add_series($serie);
-    $chart->set_labels([
-        get_string('card_notstarted', 'local_completionreport'),
-        get_string('card_inprogress', 'local_completionreport'),
-        get_string('card_completed', 'local_completionreport'),
-    ]);
-    echo html_writer::div($OUTPUT->render($chart), 'lcr-chart-card');
+    if (class_exists('\\core\\chart_pie')) {
+        $serie = new \core\chart_series(get_string('chart_progress', 'local_completionreport'), [
+            $s['notstarted'],
+            $s['inprogress'],
+            $s['completed'],
+        ]);
+        $chart = new \core\chart_pie();
+        $chart->set_doughnut(true);
+        $chart->set_title(get_string('chart_progress', 'local_completionreport'));
+        $chart->add_series($serie);
+        $chart->set_labels([
+            get_string('card_notstarted', 'local_completionreport'),
+            get_string('card_inprogress', 'local_completionreport'),
+            get_string('card_completed', 'local_completionreport'),
+        ]);
+        echo html_writer::div($OUTPUT->render($chart), 'lcr-chart-card');
 
-    if (!empty($data['sectionchart'])) {
-        $labels = array_column($data['sectionchart'], 'label');
-        $values = array_column($data['sectionchart'], 'rate');
-        $serie2 = new core_chart_series(get_string('chart_sections', 'local_completionreport'), $values);
-        $chart2 = new core_chart_bar();
-        $chart2->set_title(get_string('chart_sections', 'local_completionreport'));
-        $chart2->add_series($serie2);
-        $chart2->set_labels($labels);
-        $chart2->get_xaxis(0, true)->set_label(get_string('chart_axis_section', 'local_completionreport'));
-        $chart2->get_yaxis(0, true)->set_label(get_string('chart_axis_percent', 'local_completionreport'));
-        echo html_writer::div($OUTPUT->render($chart2), 'lcr-chart-card lcr-chart-card--wide');
-    }
+        if (!empty($data['sectionchart'])) {
+            $labels = array_column($data['sectionchart'], 'label');
+            $values = array_column($data['sectionchart'], 'rate');
+            $serie2 = new \core\chart_series(get_string('chart_sections', 'local_completionreport'), $values);
+            $chart2 = new \core\chart_bar();
+            $chart2->set_title(get_string('chart_sections', 'local_completionreport'));
+            $chart2->add_series($serie2);
+            $chart2->set_labels($labels);
+            $chart2->get_xaxis(0, true)->set_label(get_string('chart_axis_section', 'local_completionreport'));
+            $chart2->get_yaxis(0, true)->set_label(get_string('chart_axis_percent', 'local_completionreport'));
+            echo html_writer::div($OUTPUT->render($chart2), 'lcr-chart-card lcr-chart-card--wide');
+        }
 
-    if (!empty($data['activitychart'])) {
-        $labels3 = array_map(
-            fn($a) => core_text::strlen($a['name']) > 28 ? core_text::substr($a['name'], 0, 25) . '...' : $a['name'],
-            $data['activitychart']
-        );
-        $values3 = array_column($data['activitychart'], 'rate');
-        $serie3 = new core_chart_series(get_string('chart_activities', 'local_completionreport'), $values3);
-        $chart3 = new core_chart_bar();
-        $chart3->set_title(get_string('chart_activities', 'local_completionreport'));
-        $chart3->add_series($serie3);
-        $chart3->set_labels($labels3);
-        $chart3->get_yaxis(0, true)->set_label(get_string('chart_axis_percent', 'local_completionreport'));
-        echo html_writer::div($OUTPUT->render($chart3), 'lcr-chart-card lcr-chart-card--wide');
+        if (!empty($data['activitychart'])) {
+            $labels3 = array_map(
+                fn($a) => \core_text::strlen($a['name']) > 28 ? \core_text::substr($a['name'], 0, 25) . '...' : $a['name'],
+                $data['activitychart']
+            );
+            $values3 = array_column($data['activitychart'], 'rate');
+            $serie3 = new \core\chart_series(get_string('chart_activities', 'local_completionreport'), $values3);
+            $chart3 = new \core\chart_bar();
+            $chart3->set_title(get_string('chart_activities', 'local_completionreport'));
+            $chart3->add_series($serie3);
+            $chart3->set_labels($labels3);
+            $chart3->get_yaxis(0, true)->set_label(get_string('chart_axis_percent', 'local_completionreport'));
+            echo html_writer::div($OUTPUT->render($chart3), 'lcr-chart-card lcr-chart-card--wide');
+        }
     }
 
     echo html_writer::end_div();
