@@ -3,6 +3,7 @@
 Plugin **local** para Moodle **4.5+ / 5.x** que corrige el orden del reporte de finalización en cursos con **subsecciones**, con gráficos, exportación Excel y datos enriquecidos.
 
 - **Autor:** John Rivera
+- **Repositorio:** https://github.com/Johnrivera7/moodle_local_completionreport
 - **Componente:** `local_completionreport`
 - **Instalación:** `moodle/local/completionreport/`
 
