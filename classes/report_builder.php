@@ -74,9 +74,15 @@ class report_builder {
         $activities = $this->activities;
         $activitycount = count($activities);
 
-        $extrafields = 'u.id, u.firstname, u.lastname, u.email, u.idnumber, u.username, u.lastaccess';
-        $users = $this->completion->get_tracked_users('', [], $this->groupid, $extrafields);
-        \core_collator::asort_objects_by_property($users, 'lastname', \core_collator::SORT_STRING);
+        $users = $this->completion->get_progress_all(
+            '',
+            [],
+            $this->groupid,
+            'u.lastname ASC, u.firstname ASC',
+            0,
+            0,
+            $this->context
+        );
 
         $rows = [];
         $summary = [
@@ -102,13 +108,12 @@ class report_builder {
         $n = 0;
         foreach ($users as $user) {
             $n++;
-            $progress = $this->completion->get_progress_all($user->id);
             $completedcount = 0;
             $activitycells = [];
 
             foreach ($activities as $act) {
                 $cm = $act->cm;
-                $state = $this->resolve_completion_state($progress, $cm);
+                $state = $this->resolve_completion_state($user->progress ?? [], $cm);
                 $activitycells[] = $state;
                 if ($state['complete']) {
                     $completedcount++;
@@ -223,36 +228,52 @@ class report_builder {
     protected function resolve_completion_state(array $progress, \cm_info $cm): array {
         $data = $progress[$cm->id] ?? null;
         $tracking = $cm->completion == COMPLETION_TRACKING_AUTOMATIC ? 'auto' : 'manual';
-        $complete = false;
-        $label = get_string('completion-n', 'completion');
+        $overrideby = 0;
+        $state = COMPLETION_INCOMPLETE;
         $date = '';
-        $css = 'lcr-cell lcr-cell--incomplete';
-        $iconsuffix = 'n';
 
         if ($data) {
-            if ($data->completionstate == COMPLETION_COMPLETE_PASS) {
-                $complete = true;
-                $label = get_string('completion-pass', 'completion');
-                $css = 'lcr-cell lcr-cell--pass';
-                $iconsuffix = 'y';
-            } else if ($data->completionstate == COMPLETION_COMPLETE_FAIL) {
-                $label = get_string('completion-fail', 'completion');
-                $css = 'lcr-cell lcr-cell--fail';
-                $iconsuffix = 'n';
-            } else if ($data->completionstate == COMPLETION_COMPLETE) {
-                $complete = true;
-                $label = get_string('completion-y', 'completion');
-                $css = 'lcr-cell lcr-cell--complete';
-                $iconsuffix = 'y';
-            }
-
-            if (!empty($data->overrideby)) {
-                $css .= ' lcr-cell--override';
-            }
-
+            $state = (int) $data->completionstate;
+            $overrideby = (int) ($data->overrideby ?? 0);
             if (!empty($data->timemodified)) {
                 $date = userdate($data->timemodified, get_string('strftimedatefullshort', 'langconfig'));
             }
+        }
+
+        $complete = in_array($state, [COMPLETION_COMPLETE, COMPLETION_COMPLETE_PASS], true);
+        $css = 'lcr-cell lcr-cell--incomplete';
+        $iconsuffix = 'n';
+
+        switch ($state) {
+            case COMPLETION_COMPLETE_PASS:
+                $completiontype = 'pass';
+                $css = 'lcr-cell lcr-cell--pass';
+                $iconsuffix = 'y';
+                break;
+            case COMPLETION_COMPLETE_FAIL:
+                $completiontype = 'fail';
+                $css = 'lcr-cell lcr-cell--fail';
+                $iconsuffix = 'n';
+                break;
+            case COMPLETION_COMPLETE:
+                $completiontype = 'y' . ($overrideby ? '-override' : '');
+                $css = 'lcr-cell lcr-cell--complete';
+                $iconsuffix = 'y' . ($overrideby ? '-override' : '');
+                break;
+            default:
+                $completiontype = 'n' . ($overrideby ? '-override' : '');
+                $iconsuffix = 'n' . ($overrideby ? '-override' : '');
+                break;
+        }
+
+        if ($overrideby) {
+            $css .= ' lcr-cell--override';
+            $overridebyuser = \core_user::get_user($overrideby, '*', IGNORE_MISSING);
+            $label = $overridebyuser
+                ? get_string('completion-' . $completiontype, 'completion', fullname($overridebyuser))
+                : get_string('completion-' . $completiontype, 'completion');
+        } else {
+            $label = get_string('completion-' . $completiontype, 'completion');
         }
 
         return [
