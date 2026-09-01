@@ -31,6 +31,13 @@
     overflow: hidden;
 }
 
+.lcr-chart-card .chart-image {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
 .lcr-chart-card .chart-area,
 .lcr-chart-card .chart-image,
 .lcr-chart-card canvas {
