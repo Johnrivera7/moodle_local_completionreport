@@ -76,7 +76,7 @@ class report_builder {
 
         $extrafields = 'u.id, u.firstname, u.lastname, u.email, u.idnumber, u.username, u.lastaccess';
         $users = $this->completion->get_tracked_users('', [], $this->groupid, $extrafields);
-        \core_collator::asort_array_of_objects_by_property($users, 'lastname', \core_collator::SORT_STRING);
+        \core_collator::asort_objects_by_property($users, 'lastname', \core_collator::SORT_STRING);
 
         $rows = [];
         $summary = [
